@@ -2,8 +2,8 @@ package com.ambrosia.main.auth;
 
 import com.ambrosia.main.auth.appuser.AppUser;
 import com.ambrosia.main.auth.appuser.AppUserService;
-import com.ambrosia.main.auth.jwtauthentication.iomodel.AuthenticationRequest;
-import com.ambrosia.main.auth.jwtauthentication.iomodel.AuthenticationResponse;
+import com.ambrosia.main.auth.jwtauthentication.model.AuthenticationRequest;
+import com.ambrosia.main.auth.jwtauthentication.model.AuthenticationResponse;
 import com.ambrosia.main.auth.jwtauthentication.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

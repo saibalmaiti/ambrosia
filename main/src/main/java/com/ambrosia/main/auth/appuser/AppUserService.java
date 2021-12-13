@@ -3,6 +3,7 @@ package com.ambrosia.main.auth.appuser;
 import com.ambrosia.main.auth.registration.token.ConfirmationToken;
 import com.ambrosia.main.auth.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,7 +34,9 @@ public class AppUserService implements UserDetailsService {
                 .findByEmail(appUser.getEmail())
                 .isPresent();
 
-        if(userExists) throw new IllegalStateException("Email already taken");
+        if(userExists) {
+            return null;
+        }
 
         String encodedPassword = bCryptPasswordEncoder.encode(appUser.getPassword());
         appUser.setPassword(encodedPassword);

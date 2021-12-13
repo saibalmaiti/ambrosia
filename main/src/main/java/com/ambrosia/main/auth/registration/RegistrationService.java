@@ -4,11 +4,13 @@ import com.ambrosia.main.auth.appuser.AppUser;
 import com.ambrosia.main.auth.appuser.AppUserRole;
 import com.ambrosia.main.auth.appuser.AppUserService;
 import com.ambrosia.main.auth.email.EmailSender;
+import com.ambrosia.main.auth.registration.model.RegistrationResponse;
 import com.ambrosia.main.auth.registration.token.ConfirmationToken;
 import com.ambrosia.main.auth.registration.token.ConfirmationTokenService;
 import com.ambrosia.main.auth.registration.validator.ValidatorForEmail;
 import com.ambrosia.main.auth.registration.validator.ValidatorForPassword;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,12 +25,16 @@ public class RegistrationService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailSender emailSender;
 
-    public String register(RegistrationRequest request) {
+    public ResponseEntity<?> register(RegistrationRequest request) {
         boolean isValidEmail = emailValidator.test(request.getEmail());
         boolean isValidPassword = passwordValidator.test(request.getPassword());
 
-        if(!isValidEmail) throw new IllegalStateException("Email is invalid");
-        if(!isValidPassword) throw new IllegalStateException("Password is invalid");
+        if(!isValidEmail) {
+            return ResponseEntity.badRequest().body("Invalid Email Address");
+        }
+        if(!isValidPassword) {
+            return ResponseEntity.badRequest().body("Invalid Password");
+        }
 
         AppUserRole role = request.getRole().equals("admin") ? AppUserRole.ADMIN : AppUserRole.USER;
         String token = appUserService.signUpUser(new AppUser(
@@ -38,11 +44,14 @@ public class RegistrationService {
                 request.getPassword(),
                 role
         ));
+        if(token == null) {
+            return ResponseEntity.status(403).body("User already exists");
+        }
         String link = "http://localhost:8081/api/v1/registration/confirm?token=" + token;
         emailSender.send(request.getEmail(),
                 buildEmail(request.getFirstName(), link));
 
-        return token;
+        return ResponseEntity.ok(new RegistrationResponse(token, "Account successfully created. Please validate the Email"));
     }
 
     @Transactional
