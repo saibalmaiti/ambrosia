@@ -1,7 +1,7 @@
 package com.ambrosia.main.auth.jwtauthentication;
 
 import com.ambrosia.main.auth.appuser.AppUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,16 +16,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@AllArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private AppUserService appUserService;
-    private JwtUtil jwtUtil;
+    private final AppUserService appUserService;
+    private final JwtUtil jwtUtil;
 
-    @Autowired
-    public JwtRequestFilter(AppUserService userService, JwtUtil util) {
-        this.appUserService = userService;
-        this.jwtUtil = util;
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

@@ -1,5 +1,6 @@
 package com.ambrosia.main.auth;
 
+import com.ambrosia.main.auth.appuser.AppUser;
 import com.ambrosia.main.auth.appuser.AppUserService;
 import com.ambrosia.main.auth.jwtauthentication.iomodel.AuthenticationRequest;
 import com.ambrosia.main.auth.jwtauthentication.iomodel.AuthenticationResponse;
@@ -49,11 +50,11 @@ public class HomeController {
             );
         }
         catch (BadCredentialsException e) {
-//            throw new Exception("Incorrect Username or Password", e);
             return ResponseEntity.badRequest().body("Incorrect Username or Password");
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+        final AppUser user = (AppUser)userDetails;
+        return ResponseEntity.ok(new AuthenticationResponse(jwt, String.valueOf(user.getAppUserRole())));
     }
 }
