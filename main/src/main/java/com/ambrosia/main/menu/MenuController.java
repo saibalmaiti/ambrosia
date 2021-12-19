@@ -2,7 +2,9 @@ package com.ambrosia.main.menu;
 
 import com.ambrosia.main.aws.service.StorageService;
 import com.ambrosia.main.menu.entity.Item;
+import com.ambrosia.main.menu.entity.ItemCategory;
 import com.ambrosia.main.menu.model.AddItemRequestDTO;
+import com.ambrosia.main.menu.service.ItemCategoryService;
 import com.ambrosia.main.menu.service.ItemService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,11 +21,13 @@ import java.util.List;
 public class MenuController {
     private final StorageService storageService;
     private final ItemService itemService;
+    private final ItemCategoryService itemCategoryService;
 
     @Autowired
-    public MenuController(StorageService storageService, ItemService itemService) {
+    public MenuController(StorageService storageService, ItemService itemService, ItemCategoryService itemCategoryService) {
         this.storageService = storageService;
         this.itemService = itemService;
+        this.itemCategoryService = itemCategoryService;
     }
 
     @PostMapping("/add-item")
@@ -41,6 +45,11 @@ public class MenuController {
         }
     }
 
+    @PostMapping("/add-new-category")
+    public ResponseEntity<?> addNewItemCategory(@RequestParam("category") String categoryName) {
+        return  ResponseEntity.ok().body(itemCategoryService.createNewCategory(categoryName));
+    }
+
     @GetMapping("/get-all-items")
     public ResponseEntity<?> getAllItems() {
         return ResponseEntity.ok().body(itemService.getAllItems());
@@ -52,6 +61,11 @@ public class MenuController {
         return ResponseEntity.ok().body(items);
     }
 
+    @GetMapping("/get-all-item-categories")
+    public ResponseEntity<?> getAllItemCategories() {
+        List<ItemCategory> categories = itemCategoryService.getAllItemCategories();
+        return ResponseEntity.ok().body(categories);
+    }
 
     @PutMapping("/modify-item")
     public ResponseEntity<?> modifyItem(@RequestBody Item item) {
@@ -61,6 +75,11 @@ public class MenuController {
     @PutMapping("/modify-item-image")
     public ResponseEntity<?> modifyImage(@RequestParam("file") MultipartFile file, @RequestParam("id") Long id) {
         return ResponseEntity.ok().body(itemService.modifyImage(file, id));
+    }
+
+    @PutMapping("/rename-item-category")
+    public ResponseEntity<?> renameItemCategory(@RequestParam("newName") String newName, @RequestParam("oldName") String oldName){
+        return ResponseEntity.ok().body(itemCategoryService.renameCategory(newName, oldName));
     }
 
     @DeleteMapping("/delete-item")
