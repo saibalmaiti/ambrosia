@@ -2,7 +2,6 @@ package com.ambrosia.main.menu.service;
 
 import com.ambrosia.main.menu.entity.ItemCategory;
 import com.ambrosia.main.menu.repository.ItemCategoryRepository;
-import jdk.jfr.Category;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +26,9 @@ public class ItemCategoryService {
 
     public ItemCategory renameCategory(String newName, String oldName) {
         ItemCategory category = itemCategoryRepository.findByName(oldName);
+        if(category == null) {
+            return null;
+        }
         category.setName(newName);
 
         return itemCategoryRepository.save(category);

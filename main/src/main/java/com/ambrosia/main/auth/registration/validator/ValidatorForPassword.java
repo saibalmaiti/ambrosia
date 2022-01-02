@@ -9,7 +9,7 @@ public class ValidatorForPassword implements Predicate<String> {
     @Override
     public boolean test(String s) {
         return s.matches(
-                "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&-+=()])(?=\\S+$).{8,20}$"
+                "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#.$%^&-+=()])(?=\\S+$).{8,20}$"
         );
     }
 }

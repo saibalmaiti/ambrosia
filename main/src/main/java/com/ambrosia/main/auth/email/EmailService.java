@@ -26,7 +26,7 @@ public class EmailService implements EmailSender{
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, "utf-8");
             helper.setText(email, true);
             helper.setTo(to);
-            helper.setSubject("Ambrosia: confirm your email");
+            helper.setSubject("Ambroisa");
             helper.setFrom("hello@ambrosia.com");
             mailSender.send(mimeMessage);
         }
@@ -35,4 +35,5 @@ public class EmailService implements EmailSender{
             throw new IllegalStateException("failed to send email");
         }
     }
+
 }

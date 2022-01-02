@@ -1,84 +1,68 @@
-package com.ambrosia.main.auth.registration;
+package com.ambrosia.main.auth.resetPassword;
 
-import com.ambrosia.main.auth.appuser.AppUser;
-import com.ambrosia.main.auth.appuser.AppUserRole;
-import com.ambrosia.main.auth.appuser.AppUserService;
-import com.ambrosia.main.auth.email.EmailSender;
-import com.ambrosia.main.auth.registration.model.RegistrationRequest;
-import com.ambrosia.main.auth.registration.model.RegistrationResponse;
-import com.ambrosia.main.auth.registration.token.ConfirmationToken;
-import com.ambrosia.main.auth.registration.token.ConfirmationTokenService;
-import com.ambrosia.main.auth.registration.validator.ValidatorForEmail;
+import com.ambrosia.main.auth.appuser.AppUserRepository;
+import com.ambrosia.main.auth.email.EmailService;
 import com.ambrosia.main.auth.registration.validator.ValidatorForPassword;
-import lombok.AllArgsConstructor;
+import com.ambrosia.main.auth.security.PasswordEncoder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.util.Random;
 
 @Service
-@AllArgsConstructor
-public class RegistrationService {
-    private final AppUserService appUserService;
-    private final ValidatorForEmail emailValidator;
-    private final ValidatorForPassword passwordValidator;
-    private final ConfirmationTokenService confirmationTokenService;
-    private final EmailSender emailSender;
+@Slf4j
+public class ResetPasswordService {
+    private final Random random = new Random();
 
-    public ResponseEntity<?> register(RegistrationRequest request) {
-        boolean isValidEmail = emailValidator.test(request.getEmail());
-        boolean isValidPassword = passwordValidator.test(request.getPassword());
+    private final AppUserRepository appUserRepository;
+    private final EmailService emailService;
 
-        if(!isValidEmail) {
-            return ResponseEntity.badRequest().body("Invalid Email Address");
-        }
-        if(!isValidPassword) {
-            return ResponseEntity.badRequest().body("Invalid Password");
-        }
-
-        AppUserRole role = request.getRole().equals("admin") ? AppUserRole.ADMIN : AppUserRole.USER;
-        String token = appUserService.signUpUser(new AppUser(
-                request.getFirstName(),
-                request.getLastName(),
-                request.getEmail(),
-                request.getPassword(),
-                role
-        ));
-        if(token == null) {
-            return ResponseEntity.status(403).body("User already exists");
-        }
-        String link = "http://localhost:8081/api/v1/registration/confirm?token=" + token;
-        emailSender.send(request.getEmail(),
-                buildEmail(request.getFirstName(), link));
-
-        return ResponseEntity.ok(new RegistrationResponse(token, "Account successfully created. Please validate the Email"));
+    @Autowired
+    public ResetPasswordService(AppUserRepository repository, EmailService service) {
+        this.appUserRepository = repository;
+        this.emailService = service;
     }
 
-    @Transactional
-    public String confirmToken(String token) {
-        ConfirmationToken confirmationToken = confirmationTokenService
-                .getToken(token)
-                .orElseThrow(() ->
-                        new IllegalStateException("token not found"));
-
-        if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("email already confirmed");
+    public ResponseEntity<?> sendForgotPasswordOTP(String email) {
+        boolean userExists = appUserRepository.findByEmail(email).isPresent();
+        if(!userExists) {
+            return ResponseEntity.status(403).body("User does not exist");
         }
 
-        LocalDateTime expiredAt = confirmationToken.getExpiresAt();
+        String otp = Integer.toString(random.nextInt(1000000));
+        String emailBody = buildEmail(otp);
 
-        if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("token expired");
+        try {
+            emailService.send(email, emailBody);
+        }
+        catch (Exception e) {
+            log.error(e.toString());
+            return ResponseEntity.status(500).body("Failed to send message");
         }
 
-        confirmationTokenService.setConfirmedAt(token);
-        appUserService.enableAppUser(
-                confirmationToken.getAppUser().getEmail());
-        return "confirmed";
+        return ResponseEntity.status(200).body("OTP: " + otp);
     }
 
-    private String buildEmail(String name, String link) {
+    public ResponseEntity<?> updatePassword(String email, String password) {
+        ValidatorForPassword validator = new ValidatorForPassword();
+        if(!validator.test(password)) {
+            return  ResponseEntity.status(403).body("Invalid Password");
+        }
+
+        PasswordEncoder encoder = new PasswordEncoder();
+        String hashedPassword = encoder.bCryptPasswordEncoder().encode(password);
+        int i = appUserRepository.updatePassword(email, hashedPassword);
+        if(i > 0) {
+            return ResponseEntity.ok("Password successfully updated");
+        }
+        return ResponseEntity.status(403).body("Failed to update password");
+    }
+
+
+
+    private String buildEmail(String OTP) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +
@@ -134,7 +118,7 @@ public class RegistrationService {
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
                 "      <td style=\"font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px\">\n" +
                 "        \n" +
-                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\">Hi " + name + ",</p><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> Thank you for registering. Please click on the below link to activate your account: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <a href=\"" + link + "\">Activate Now</a> </p></blockquote>\n Link will expire in 15 minutes. <p>See you soon</p>" +
+                "            <p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> This is the OTP for resetting your password: </p><blockquote style=\"Margin:0 0 20px 0;border-left:10px solid #b1b4b6;padding:15px 0 0.1px 15px;font-size:19px;line-height:25px\"><p style=\"Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c\"> <h2>" + OTP + "</h2>" +
                 "        \n" +
                 "      </td>\n" +
                 "      <td width=\"10\" valign=\"middle\"><br></td>\n" +
@@ -146,5 +130,4 @@ public class RegistrationService {
                 "\n" +
                 "</div></div>";
     }
-
 }
