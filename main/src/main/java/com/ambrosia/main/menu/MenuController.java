@@ -58,6 +58,9 @@ public class MenuController {
     @GetMapping("/get-items-by-category")
     public ResponseEntity<?> getItemsByCategory(@RequestParam(value = "category") String category) {
         List<Item> items = itemService.getAllItemsByCategory(category);
+        if(items == null) {
+            return ResponseEntity.status(404).body("Category not found");
+        }
         return ResponseEntity.ok().body(items);
     }
 
@@ -79,7 +82,11 @@ public class MenuController {
 
     @PutMapping("/rename-item-category")
     public ResponseEntity<?> renameItemCategory(@RequestParam("newName") String newName, @RequestParam("oldName") String oldName){
-        return ResponseEntity.ok().body(itemCategoryService.renameCategory(newName, oldName));
+        ItemCategory itemCategory = itemCategoryService.renameCategory(newName, oldName);
+        if(itemCategory == null) {
+            return ResponseEntity.status(404).body("Item category not found");
+        }
+        return ResponseEntity.ok().body(itemCategory);
     }
 
     @DeleteMapping("/delete-item")
