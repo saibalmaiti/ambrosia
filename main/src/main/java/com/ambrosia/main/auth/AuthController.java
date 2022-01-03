@@ -11,38 +11,23 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class HomeController {
+@RequestMapping("api/v1/authenticate")
+public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final AppUserService userDetailsService;
     private final JwtUtil jwtUtil;
     @Autowired
-    public HomeController(AuthenticationManager manager, AppUserService userDetailsService, JwtUtil util) {
+    public AuthController(AuthenticationManager manager, AppUserService userDetailsService, JwtUtil util) {
         this.authenticationManager = manager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = util;
     }
 
-    @GetMapping("/")
-    public String home() {
-        return ("<h1>Common Home</h1>");
-    }
-    @GetMapping("/user")
-    public String userHome() {
-        return ("<h1>User Home</h1>");
-    }
-    @GetMapping("/admin")
-    public String adminHome() {
-        return ("<h1>Admin Home</h1>");
-    }
-
-    @PostMapping("/authenticate")
+    @PostMapping
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
         try {
             authenticationManager.authenticate(
