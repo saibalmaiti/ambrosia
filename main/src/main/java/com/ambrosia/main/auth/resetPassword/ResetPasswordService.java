@@ -1,5 +1,6 @@
 package com.ambrosia.main.auth.resetPassword;
 
+import com.ambrosia.main.auth.appuser.AppUser;
 import com.ambrosia.main.auth.appuser.AppUserRepository;
 import com.ambrosia.main.auth.email.EmailService;
 import com.ambrosia.main.auth.registration.validator.ValidatorForPassword;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -51,6 +53,10 @@ public class ResetPasswordService {
             return  ResponseEntity.status(403).body("Invalid Password");
         }
 
+        Optional<AppUser> appUser = appUserRepository.findByEmail(email);
+        if(appUser.isEmpty()) {
+            return ResponseEntity.status(404).body("User not found");
+        }
         PasswordEncoder encoder = new PasswordEncoder();
         String hashedPassword = encoder.bCryptPasswordEncoder().encode(password);
         int i = appUserRepository.updatePassword(email, hashedPassword);
