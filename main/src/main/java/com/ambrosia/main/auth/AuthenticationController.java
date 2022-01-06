@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/authenticate")
-public class AuthController {
+public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
     private final AppUserService userDetailsService;
     private final JwtUtil jwtUtil;
     @Autowired
-    public AuthController(AuthenticationManager manager, AppUserService userDetailsService, JwtUtil util) {
+    public AuthenticationController(AuthenticationManager manager, AppUserService userDetailsService, JwtUtil util) {
         this.authenticationManager = manager;
         this.userDetailsService = userDetailsService;
         this.jwtUtil = util;
@@ -40,6 +40,14 @@ public class AuthController {
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails);
         final AppUser user = (AppUser)userDetails;
-        return ResponseEntity.ok(new AuthenticationResponse(jwt, String.valueOf(user.getAppUserRole())));
+        AuthenticationResponse response = new AuthenticationResponse(
+                jwt,
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                String.valueOf(user.getAppUserRole())
+        );
+        return ResponseEntity.ok().body(response);
     }
 }
