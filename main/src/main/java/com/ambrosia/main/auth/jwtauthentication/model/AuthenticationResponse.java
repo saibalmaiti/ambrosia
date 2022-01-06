@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class AuthenticationResponse {
     private final String jwt;
+    private final String firebaseToken;
     private final Long appUserId;
     private final String firstName;
     private final String lastName;
