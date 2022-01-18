@@ -41,7 +41,7 @@ public class MenuController {
                 return ResponseEntity.ok("Item successfully added");
             return ResponseEntity.badRequest().body("Failed to store the item in the database");
         } catch (JsonProcessingException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to transform item string to json");
+            return ResponseEntity.status(400).body("Failed to transform item string to json");
         }
     }
 
@@ -72,11 +72,14 @@ public class MenuController {
 
     @PutMapping("/modify-item")
     public ResponseEntity<?> modifyItem(@RequestBody Item item) {
+        System.out.println(item);
         return ResponseEntity.ok().body(itemService.modifyItem(item));
     }
 
     @PutMapping("/modify-item-image")
     public ResponseEntity<?> modifyImage(@RequestParam("file") MultipartFile file, @RequestParam("id") Long id) {
+        // while updating an item, the category must be present in the database
+        // no new category will be created
         return ResponseEntity.ok().body(itemService.modifyImage(file, id));
     }
 

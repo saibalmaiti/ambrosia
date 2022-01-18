@@ -44,7 +44,7 @@ public class ResetPasswordService {
             return ResponseEntity.status(500).body("Failed to send message");
         }
 
-        return ResponseEntity.status(200).body("OTP: " + otp);
+        return ResponseEntity.status(200).body(otp);
     }
 
     public ResponseEntity<?> updatePassword(String email, String password) {

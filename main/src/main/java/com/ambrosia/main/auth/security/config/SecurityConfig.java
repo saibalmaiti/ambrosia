@@ -18,7 +18,9 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @AllArgsConstructor
@@ -69,10 +71,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsFilter corsFilter() {
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         final CorsConfiguration config = new CorsConfiguration();
+        List<String> origins = new ArrayList<>();
+        origins.add("http://localhost:3000");
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000");
-        // Don't do this in production, use a proper list  of allowed origins
-        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
+        config.setAllowedOrigins(origins);
+        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept","Authorization"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS", "DELETE", "PATCH"));
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);

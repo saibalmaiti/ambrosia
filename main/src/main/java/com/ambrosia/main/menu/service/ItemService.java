@@ -57,15 +57,7 @@ public class ItemService {
     @Modifying
     @Transactional
     public Item modifyItem(Item item) {
-        Item existingItem = itemRepository.getById(item.getItemId());
-        existingItem.setName(item.getName());
-        existingItem.setCategory(item.getCategory());
-        existingItem.setDescription(item.getDescription());
-        existingItem.setImageFileName(item.getImageFileName());
-        existingItem.setIsVeg(item.getIsVeg());
-        existingItem.setPrice(item.getPrice());
-
-        return itemRepository.save(existingItem);
+        return itemRepository.save(item);
     }
 
     @Modifying

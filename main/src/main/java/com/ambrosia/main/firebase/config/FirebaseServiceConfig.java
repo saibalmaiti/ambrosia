@@ -4,7 +4,6 @@ import com.ambrosia.main.MainApplication;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import org.springframework.context.annotation.Bean;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,7 +15,7 @@ public class FirebaseServiceConfig {
     public static void configureFirebaseService() throws IOException {
         ClassLoader classLoader = MainApplication.class.getClassLoader();
 
-        File file = new File(Objects.requireNonNull(classLoader.getResource("ambrosia-firebase-key.json")).getFile());
+        File file = new File(Objects.requireNonNull(classLoader.getResource("firebase.json")).getFile());
         FileInputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
 
         FirebaseOptions options = new FirebaseOptions.Builder()
