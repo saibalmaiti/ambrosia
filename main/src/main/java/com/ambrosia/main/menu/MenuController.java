@@ -55,8 +55,8 @@ public class MenuController {
         return ResponseEntity.ok().body(itemService.getAllItems());
     }
 
-    @GetMapping("/get-items-by-category")
-    public ResponseEntity<?> getItemsByCategory(@RequestParam(value = "category") String category) {
+    @GetMapping("/get-items-by-category/{category}")
+    public ResponseEntity<?> getItemsByCategory(@PathVariable String category) {
         List<Item> items = itemService.getAllItemsByCategory(category);
         if(items == null) {
             return ResponseEntity.status(404).body("Category not found");

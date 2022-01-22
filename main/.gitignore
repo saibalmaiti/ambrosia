@@ -5,8 +5,8 @@ target/
 !**/src/test/**/target/
 
 ### Propertied ###
-.properties
-.yml
+*.properties
+*.yml
 
 ### STS ###
 .apt_generated
