@@ -3,7 +3,6 @@ package com.ambrosia.main.auth.appuser;
 import com.ambrosia.main.auth.registration.token.ConfirmationToken;
 import com.ambrosia.main.auth.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

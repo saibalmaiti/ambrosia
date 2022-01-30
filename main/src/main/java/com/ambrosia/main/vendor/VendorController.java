@@ -1,6 +1,6 @@
 package com.ambrosia.main.vendor;
 
-import com.ambrosia.main.vendor.models.ActiveStatusRequest;
+import com.ambrosia.main.vendor.dto.ActiveStatusRequest;
 import com.ambrosia.main.vendor.service.VendorActiveStatusService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

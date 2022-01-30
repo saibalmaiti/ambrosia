@@ -2,11 +2,12 @@ package com.ambrosia.main.auth;
 
 import com.ambrosia.main.auth.appuser.AppUser;
 import com.ambrosia.main.auth.appuser.AppUserService;
-import com.ambrosia.main.auth.jwtauthentication.model.AuthenticationRequest;
-import com.ambrosia.main.auth.jwtauthentication.model.AuthenticationResponse;
+import com.ambrosia.main.auth.jwtauthentication.dto.AuthenticationRequest;
+import com.ambrosia.main.auth.jwtauthentication.dto.AuthenticationResponse;
 import com.ambrosia.main.auth.jwtauthentication.JwtUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/v1/authenticate")
+@Slf4j
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
@@ -32,8 +34,12 @@ public class AuthenticationController {
     @PostMapping
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) {
         String firebaseToken;
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
         try {
             firebaseToken = FirebaseAuth.getInstance().createCustomToken(authenticationRequest.getUsername());
+            if(!userDetails.isEnabled()) {
+                return ResponseEntity.status(403).body("Please verify the email first");
+            }
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
             );
@@ -44,7 +50,7 @@ public class AuthenticationController {
         catch (FirebaseAuthException e) {
             return ResponseEntity.status(500).body("Failed to create firebase auth token");
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+
         final String jwt = jwtUtil.generateToken(userDetails);
         final AppUser user = (AppUser)userDetails;
         AuthenticationResponse response = new AuthenticationResponse(

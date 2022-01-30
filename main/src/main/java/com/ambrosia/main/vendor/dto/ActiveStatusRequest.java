@@ -1,4 +1,4 @@
-package com.ambrosia.main.vendor.models;
+package com.ambrosia.main.vendor.dto;
 
 import com.ambrosia.main.vendor.entity.ActiveStatusValues;
 import lombok.Builder;
@@ -11,5 +11,5 @@ import java.util.Date;
 public class ActiveStatusRequest {
     private Long appUserId;
     private Date date;
-    private ActiveStatusValues status;
+    private ActiveStatusValues status;  // OPEN / CLOSE
 }

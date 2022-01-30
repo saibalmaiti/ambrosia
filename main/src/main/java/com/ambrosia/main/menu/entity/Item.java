@@ -27,6 +27,7 @@ public class Item {
     private Double price;
     private String imageFileName;
     private Boolean isVeg;
+    private Boolean isActive;
 
     @ManyToOne(
             cascade = CascadeType.PERSIST

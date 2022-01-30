@@ -1,4 +1,4 @@
-package com.ambrosia.main.auth.registration.model;
+package com.ambrosia.main.auth.registration.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

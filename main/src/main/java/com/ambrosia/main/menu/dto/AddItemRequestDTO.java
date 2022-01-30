@@ -1,4 +1,4 @@
-package com.ambrosia.main.menu.model;
+package com.ambrosia.main.menu.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -3,11 +3,13 @@ package com.ambrosia.main.menu.service;
 import com.ambrosia.main.aws.service.StorageService;
 import com.ambrosia.main.menu.entity.Item;
 import com.ambrosia.main.menu.entity.ItemCategory;
-import com.ambrosia.main.menu.model.AddItemRequestDTO;
+import com.ambrosia.main.menu.dto.AddItemRequestDTO;
 import com.ambrosia.main.menu.repository.ItemCategoryRepository;
 import com.ambrosia.main.menu.repository.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -39,6 +41,7 @@ public class ItemService {
                 .description(addItemRequest.getDescription())
                 .price(addItemRequest.getPrice())
                 .isVeg(addItemRequest.getIsVeg())
+                .isActive(true)
                 .imageFileName(imageFileName)
                 .category(category)
                 .build();
@@ -46,7 +49,7 @@ public class ItemService {
     }
 
     public List<Item> getAllItems() {
-        return itemRepository.findAll();
+        return itemRepository.findAll(Sort.by(Sort.Order.by("itemId")));
     }
 
     public List<Item> getAllItemsByCategory(String category) {
@@ -57,6 +60,14 @@ public class ItemService {
     @Modifying
     @Transactional
     public Item modifyItem(Item item) {
+        return itemRepository.save(item);
+    }
+
+    @Modifying
+    @Transactional
+    public Item toggleActiveStatus(Long id) {
+        Item item = itemRepository.getById(id);
+        item.setIsActive(!item.getIsActive());
         return itemRepository.save(item);
     }
 

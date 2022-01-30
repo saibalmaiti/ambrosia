@@ -1,4 +1,4 @@
-package com.ambrosia.main.auth.jwtauthentication.model;
+package com.ambrosia.main.auth.registration.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
-    private String username;
-    private String password;
+public class RegistrationResponse {
+    private String token;
+    private String message;
 }

@@ -3,7 +3,7 @@ package com.ambrosia.main.menu;
 import com.ambrosia.main.aws.service.StorageService;
 import com.ambrosia.main.menu.entity.Item;
 import com.ambrosia.main.menu.entity.ItemCategory;
-import com.ambrosia.main.menu.model.AddItemRequestDTO;
+import com.ambrosia.main.menu.dto.AddItemRequestDTO;
 import com.ambrosia.main.menu.service.ItemCategoryService;
 import com.ambrosia.main.menu.service.ItemService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -60,6 +60,7 @@ public class MenuController {
         if(items == null) {
             return ResponseEntity.status(404).body("Category not found");
         }
+        items.sort((o1, o2) -> (int) (o1.getItemId() - o2.getItemId()));
         return ResponseEntity.ok().body(items);
     }
 
@@ -80,6 +81,17 @@ public class MenuController {
         // while updating an item, the category must be present in the database
         // no new category will be created
         return ResponseEntity.ok().body(itemService.modifyImage(file, id));
+    }
+
+    @PutMapping("/toggle-item-active")
+    public ResponseEntity<?> toggleAciveStatus(@RequestParam("id") Long id) {
+        try {
+            Item item = itemService.toggleActiveStatus(id);
+            return ResponseEntity.ok().body(item);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to toggle the status of the item");
+        }
     }
 
     @PutMapping("/rename-item-category")

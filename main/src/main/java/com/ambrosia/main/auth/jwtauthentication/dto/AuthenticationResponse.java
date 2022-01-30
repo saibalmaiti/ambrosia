@@ -1,4 +1,4 @@
-package com.ambrosia.main.auth.jwtauthentication.model;
+package com.ambrosia.main.auth.jwtauthentication.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
