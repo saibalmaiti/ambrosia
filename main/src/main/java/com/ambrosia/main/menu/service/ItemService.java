@@ -51,6 +51,7 @@ public class ItemService {
     public List<Item> getAllItems() {
         return itemRepository.findAll(Sort.by(Sort.Order.by("itemId")));
     }
+    public List<Item> getAllActiveItems() {return itemRepository.findAllByIsActive(true);}
 
     public List<Item> getAllItemsByCategory(String category) {
         ItemCategory c = itemCategoryRepository.findByName(category);
