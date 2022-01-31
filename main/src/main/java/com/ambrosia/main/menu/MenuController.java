@@ -8,13 +8,16 @@ import com.ambrosia.main.menu.service.ItemCategoryService;
 import com.ambrosia.main.menu.service.ItemService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.aspectj.apache.bcel.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/menu")
 public class MenuController {
@@ -54,6 +57,19 @@ public class MenuController {
         return ResponseEntity.ok().body(itemService.getAllItems());
     }
 
+    @GetMapping("/get-all-active-items")
+    public ResponseEntity<?> getAllActiveItems() {
+        List<Item> list = null;
+        try {
+            list = itemService.getAllActiveItems();
+            list.sort((o1, o2) -> (int) (o1.getItemId() - o2.getItemId()));
+            return ResponseEntity.ok().body(list);
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(500).body("Failed to fetch active items");
+        }
+    }
+
     @GetMapping("/get-items-by-category/{category}")
     public ResponseEntity<?> getItemsByCategory(@PathVariable String category) {
         List<Item> items = itemService.getAllItemsByCategory(category);
@@ -90,6 +106,7 @@ public class MenuController {
             return ResponseEntity.ok().body(item);
         }
         catch (Exception e) {
+            log.info(e.toString());
             return ResponseEntity.status(500).body("Failed to toggle the status of the item");
         }
     }
