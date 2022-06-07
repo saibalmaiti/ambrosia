@@ -15,7 +15,7 @@ public class FirebaseServiceConfig {
     public static void configureFirebaseService() throws IOException {
         ClassLoader classLoader = MainApplication.class.getClassLoader();
 
-        File file = new File(Objects.requireNonNull(classLoader.getResource("ambrosia-firebase-key.json")).getFile());
+        File file = new File(Objects.requireNonNull(classLoader.getResource("firebase.json")).getFile());
         FileInputStream serviceAccount = new FileInputStream(file.getAbsolutePath());
 
         FirebaseOptions options = new FirebaseOptions.Builder()
