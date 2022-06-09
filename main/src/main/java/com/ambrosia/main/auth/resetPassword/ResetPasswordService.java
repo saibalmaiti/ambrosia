@@ -1,7 +1,7 @@
 package com.ambrosia.main.auth.resetPassword;
 
-import com.ambrosia.main.auth.appuser.AppUser;
-import com.ambrosia.main.auth.appuser.AppUserRepository;
+import com.ambrosia.main.auth.appuser.entity.AppUser;
+import com.ambrosia.main.auth.appuser.repository.AppUserRepository;
 import com.ambrosia.main.auth.email.EmailService;
 import com.ambrosia.main.auth.registration.validator.ValidatorForPassword;
 import com.ambrosia.main.auth.security.PasswordEncoder;

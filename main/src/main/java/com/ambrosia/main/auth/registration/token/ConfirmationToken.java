@@ -1,6 +1,6 @@
 package com.ambrosia.main.auth.registration.token;
 
-import com.ambrosia.main.auth.appuser.AppUser;
+import com.ambrosia.main.auth.appuser.entity.AppUser;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

@@ -1,7 +1,7 @@
 package com.ambrosia.main.auth.security.config;
 
 import com.ambrosia.main.auth.jwtauthentication.JwtRequestFilter;
-import com.ambrosia.main.auth.appuser.AppUserService;
+import com.ambrosia.main.auth.appuser.service.AppUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

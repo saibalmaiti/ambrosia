@@ -12,7 +12,6 @@ import org.springframework.cloud.aws.mail.simplemail.SimpleEmailServiceJavaMailS
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.javamail.JavaMailSender;
 
 

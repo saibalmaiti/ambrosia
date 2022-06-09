@@ -1,8 +1,12 @@
-package com.ambrosia.main.auth.appuser;
+package com.ambrosia.main.auth.appuser.service;
 
+import com.ambrosia.main.auth.appuser.repository.AppUserRepository;
+import com.ambrosia.main.auth.appuser.entity.AppUser;
 import com.ambrosia.main.auth.registration.token.ConfirmationToken;
 import com.ambrosia.main.auth.registration.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -55,5 +60,13 @@ public class AppUserService implements UserDetailsService {
 
     public int enableAppUser(String email) {
         return userRepository.enableAppUser(email);
+    }
+
+    public ResponseEntity<?> getUserById(Long userId) {
+        Optional<AppUser> userOptional = userRepository.findById(userId);
+        if(userOptional.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(userOptional.get());
     }
 }

@@ -1,4 +1,4 @@
-package com.ambrosia.main.auth.appuser;
+package com.ambrosia.main.auth.appuser.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

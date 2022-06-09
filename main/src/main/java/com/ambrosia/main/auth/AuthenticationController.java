@@ -1,7 +1,7 @@
 package com.ambrosia.main.auth;
 
-import com.ambrosia.main.auth.appuser.AppUser;
-import com.ambrosia.main.auth.appuser.AppUserService;
+import com.ambrosia.main.auth.appuser.entity.AppUser;
+import com.ambrosia.main.auth.appuser.service.AppUserService;
 import com.ambrosia.main.auth.jwtauthentication.dto.AuthenticationRequest;
 import com.ambrosia.main.auth.jwtauthentication.dto.AuthenticationResponse;
 import com.ambrosia.main.auth.jwtauthentication.JwtUtil;

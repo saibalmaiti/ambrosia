@@ -1,6 +1,6 @@
 package com.ambrosia.main.auth.jwtauthentication;
 
-import com.ambrosia.main.auth.appuser.AppUserService;
+import com.ambrosia.main.auth.appuser.service.AppUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,8 +1,8 @@
 package com.ambrosia.main.auth.registration;
 
-import com.ambrosia.main.auth.appuser.AppUser;
-import com.ambrosia.main.auth.appuser.AppUserRole;
-import com.ambrosia.main.auth.appuser.AppUserService;
+import com.ambrosia.main.auth.appuser.entity.AppUser;
+import com.ambrosia.main.auth.appuser.entity.AppUserRole;
+import com.ambrosia.main.auth.appuser.service.AppUserService;
 import com.ambrosia.main.auth.email.EmailSender;
 import com.ambrosia.main.auth.registration.dto.RegistrationRequest;
 import com.ambrosia.main.auth.registration.dto.RegistrationResponse;
